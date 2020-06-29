@@ -1,30 +1,82 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: liuhao
-  Date: 2020/6/22
-  Time: 14:55
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="ch">
-<head>
-  <meta charset="UTF-8">
-  <title>登录</title>
-</head>
-<body>
-<center>
-  <form action="denglu.html" method="get">
-    账号：<input type="text" name="username" placeholder="请输入用户名">
-    <br>
-    密码：<input type="password" name="userpassword" placeholder="请输入密码">
-    <br>
-    性别：<input type="radio" value="man" name="sex" checked>男
-    <input type="radio" value="woman" name="sex">女
-    <input type="submit" value="登录">
-    <input type="reset" value="重置">
+package ai;
 
-  </form>
-</center>
-</body>
-<ml>
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
+
+public class RPolandExpression {
+static final double ERROR = -1;
+public static void main(String[] args) {
+System.out.println(eval("1 2 + 3 4 + *") == 21.0);//ok
+System.out.println(eval("+ 1 2") == ERROR);//error
+System.out.println(eval("1 2 +") == 3.0);
+System.out.println(eval("5 1 5 / - 5 *"));
+//(5 - (1/5)) *5 =24
+
+System.out.println(eval("5 1 5 / - 5 *".split("\\s+")));
+System.out.println(eval(Arrays.asList("5 1 5 / - 5 *".split("\\s+"))));
+}
+
+private static double eval(String s) {
+public static double eval(List<String> exp) {
+Stack<Double> S = new Stack<>();
+String[] exp = s.split("\\s+");
+for (String tok : exp) {
+if (isNumber(tok)) {
+S.push(Double.parseDouble(tok));
+} else {
+if (S.isEmpty()) {
+return ERROR;
+}
+double b = S.peek();
+S.pop();
+if (S.isEmpty()) {
+return ERROR;
+}
+double a = S.peek();
+S.pop();
+double c = 0;
+switch (tok) {
+case "+":
+c = a + b;
+break;
+case "-":
+c = a - b;
+break;
+case "*":
+c = a * b;
+break;
+case "/":
+if(b==0)return ERROR;
+if (b == 0) return ERROR;
+c = a / b;
+break;
+
+}
+S.push(c);
+}
+}
+return S.size() != 1 ? ERROR : S.peek();
+}
+
+private static boolean isNumber(String tok) {
+public static double eval(String[] exp) {
+return eval(Arrays.asList(exp));
+}
+
+public static double eval(String s) {
+
+return eval(s.split("\\s+"));
+
+}
+
+public static boolean isNumber(String tok) {
+try {
+Double.parseDouble(tok);
+return true;
+} catch (Exception e) {
+return false;
+}
+}
+}
